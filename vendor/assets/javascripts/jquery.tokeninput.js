@@ -365,10 +365,10 @@ $.TokenList = function (input, url_or_data, settings) {
                     }
                     return false;
                 case KEY.COMMA:
-                    if(selected_dropdown_item && $(input).data("settings").allowCommaToSubmit) {
+                    if(selected_dropdown_item && !$(input).data("settings").doNotAllowCommaToSubmit) {
                         add_token($(selected_dropdown_item).data("tokeninput"));
                         hidden_input.change();
-                    } else if($(input).data("settings").allowCommaToSubmit) {
+                    } else if(!$(input).data("settings").doNotAllowCommaToSubmit) {
                         if ($(input).data("settings").allowFreeTagging) {
                           if($(input).data("settings").allowTabOut && $(this).val() === "") {
                             return true;
@@ -383,6 +383,9 @@ $.TokenList = function (input, url_or_data, settings) {
                         }
                         event.stopPropagation();
                         event.preventDefault();
+                    }
+                    if(!$(input).data("settings").doNotAllowCommaToSubmit) {
+                        return false;
                     }
 
                 case KEY.ESCAPE:
