@@ -384,7 +384,6 @@ $.TokenList = function (input, url_or_data, settings) {
                         event.stopPropagation();
                         event.preventDefault();
                     }
-                    return false;
 
                 case KEY.ESCAPE:
                   hide_dropdown();
