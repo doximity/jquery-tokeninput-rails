@@ -343,27 +343,48 @@ $.TokenList = function (input, url_or_data, settings) {
                 case KEY.TAB:
                 case KEY.ENTER:
                 case KEY.NUMPAD_ENTER:
-                case KEY.COMMA:
-                  if(selected_dropdown_item) {
-                    add_token($(selected_dropdown_item).data("tokeninput"));
-                    hidden_input.change();
-                  } else {
-                    if ($(input).data("settings").allowFreeTagging) {
-                      if($(input).data("settings").allowTabOut && $(this).val() === "") {
-                        return true;
-                      } else {
-                        add_freetagging_tokens();
-                      }
+                case KEY.NUMPAD_ENTER:
+                    if(selected_dropdown_item) {
+                        add_token($(selected_dropdown_item).data("tokeninput"));
+                        hidden_input.change();
                     } else {
-                      $(this).val("");
-                      if($(input).data("settings").allowTabOut) {
-                        return true;
-                      }
+                        if ($(input).data("settings").allowFreeTagging) {
+                          if($(input).data("settings").allowTabOut && $(this).val() === "") {
+                            return true;
+                          } else {
+                            add_freetagging_tokens();
+                          }
+                        } else {
+                          $(this).val("");
+                          if($(input).data("settings").allowTabOut) {
+                            return true;
+                          }
+                        }
+                        event.stopPropagation();
+                        event.preventDefault();
                     }
-                    event.stopPropagation();
-                    event.preventDefault();
-                  }
-                  return false;
+                    return false;
+                case KEY.COMMA:
+                    if(selected_dropdown_item && $(input).data("settings").allowCommaToSubmit) {
+                        add_token($(selected_dropdown_item).data("tokeninput"));
+                        hidden_input.change();
+                    } else if($(input).data("settings").allowCommaToSubmit) {
+                        if ($(input).data("settings").allowFreeTagging) {
+                          if($(input).data("settings").allowTabOut && $(this).val() === "") {
+                            return true;
+                          } else {
+                            add_freetagging_tokens();
+                          }
+                        } else {
+                          $(this).val("");
+                          if($(input).data("settings").allowTabOut) {
+                            return true;
+                          }
+                        }
+                        event.stopPropagation();
+                        event.preventDefault();
+                    }
+                    return false;
 
                 case KEY.ESCAPE:
                   hide_dropdown();
