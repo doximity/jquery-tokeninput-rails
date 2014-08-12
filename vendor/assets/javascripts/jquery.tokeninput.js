@@ -668,6 +668,17 @@ $.TokenList = function (input, url_or_data, settings) {
         if($(input).data("settings").tokenLimit !== null && token_count >= $(input).data("settings").tokenLimit) {
             input_box.hide();
             hide_dropdown();
+
+            if($(input).data("settings").tabToNext)
+                var inputs = $(":input:visible");
+
+                // Skip last because it has no following input to focus on.
+                for(var i = 0; i < inputs.length - 1; i++) {
+                    if(inputs[i] !== input_box[0]) continue;
+                    inputs[i + 1].trigger("focus");
+                    break;
+                }
+            }
         }
 
         return $this_token;
