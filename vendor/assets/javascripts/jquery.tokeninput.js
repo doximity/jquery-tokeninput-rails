@@ -669,7 +669,7 @@ $.TokenList = function (input, url_or_data, settings) {
             input_box.hide();
             hide_dropdown();
 
-            if($(input).data("settings").tabToNext)
+            if($(input).data("settings").tabToNext) {
                 var inputs = $(":input:visible");
 
                 // Skip last because it has no following input to focus on.
