@@ -262,7 +262,11 @@ $.TokenList = function (input, url_or_data, settings) {
                 return false;
             } else
             if ($(input).data("settings").tokenLimit === null || $(input).data("settings").tokenLimit !== token_count) {
+              if ($(input).data("settings").minChars == 0) {
+                do_search();
+              } else {
                 show_dropdown_hint();
+              }
             }
             token_list.addClass($(input).data("settings").classes.focused);
         })
@@ -953,7 +957,7 @@ $.TokenList = function (input, url_or_data, settings) {
     function do_search() {
         var query = input_box.val();
 
-        if(query && query.length) {
+        if((query && query.length) || !$(input).data("settings").minChars) {
             if(selected_token) {
                 deselect_token($(selected_token), POSITION.AFTER);
             }
