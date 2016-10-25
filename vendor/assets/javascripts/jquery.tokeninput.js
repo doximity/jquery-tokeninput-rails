@@ -150,16 +150,16 @@ var methods = {
             $(this).data("tokenInputObject", new $.TokenList(this, url_or_data_or_function, settings));
         });
     },
-    clear: function() {
-        this.data("tokenInputObject").clear();
+    clear: function(options) {
+        this.data("tokenInputObject").clear(options);
         return this;
     },
-    add: function(item) {
-        this.data("tokenInputObject").add(item);
+    add: function(item, options) {
+        this.data("tokenInputObject").add(item, options);
         return this;
     },
-    remove: function(item) {
-        this.data("tokenInputObject").remove(item);
+    remove: function(item, options) {
+        this.data("tokenInputObject").remove(item, options);
         return this;
     },
     get: function() {
@@ -522,19 +522,22 @@ $.TokenList = function (input, url_or_data, settings) {
     // Public functions
     //
 
-    this.clear = function() {
+    this.clear = function(options) {
+        options = $.extend({}, { focus: true }, options);
         token_list.children("li").each(function() {
             if ($(this).children("input").length === 0) {
-                delete_token($(this));
+                delete_token($(this), options);
             }
         });
     };
 
-    this.add = function(item) {
-        add_token(item);
+    this.add = function(item, options) {
+        options = $.extend({}, { focus: true }, options);
+        add_token(item, options);
     };
 
-    this.remove = function(item) {
+    this.remove = function(item, options) {
+        options = $.extend({}, { focus: true }, options);
         token_list.children("li").each(function() {
             if ($(this).children("input").length === 0) {
                 var currToken = $(this).data("tokeninput");
@@ -546,7 +549,7 @@ $.TokenList = function (input, url_or_data, settings) {
                     }
                 }
                 if (match) {
-                    delete_token($(this));
+                    delete_token($(this), options);
                 }
             }
         });
@@ -678,7 +681,7 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     // Add a token to the token list based on user input
-    function add_token (item) {
+    function add_token (item, options) {
         var callback = $(input).data("settings").onAdd;
 
         // See if the token already exists and select it if we don't want duplicates
@@ -696,7 +699,10 @@ $.TokenList = function (input, url_or_data, settings) {
             if(found_existing_token) {
                 select_token(found_existing_token);
                 input_token.insertAfter(found_existing_token);
-                focus_with_timeout(input_box);
+                if (!options || options.focus == null || options.focus) {
+                    // Show the input box and give it focus again
+                    focus_with_timeout(input_box);
+                }
                 return;
             }
         }
@@ -774,7 +780,7 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     // Delete a token from the token list
-    function delete_token (token) {
+    function delete_token (token, options) {
         // Remove the id from the saved list
         var token_data = $.data(token.get(0), "tokeninput");
         var callback = $(input).data("settings").onDelete;
@@ -786,8 +792,10 @@ $.TokenList = function (input, url_or_data, settings) {
         token.remove();
         selected_token = null;
 
-        // Show the input box and give it focus again
-        focus_with_timeout(input_box);
+        if (!options || options.focus == null || options.focus) {
+            // Show the input box and give it focus again
+            focus_with_timeout(input_box);
+        }
 
         // Remove this token from the saved list
         saved_tokens = saved_tokens.slice(0,index).concat(saved_tokens.slice(index+1));
@@ -805,7 +813,10 @@ $.TokenList = function (input, url_or_data, settings) {
             input_box
                 .show()
                 .val("");
-            focus_with_timeout(input_box);
+            if (!options || options.focus == null || options.focus) {
+                // Show the input box and give it focus again
+                focus_with_timeout(input_box);
+            }
         }
 
         // Execute the onDelete callback if defined
